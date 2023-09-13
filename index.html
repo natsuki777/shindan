@@ -1,0 +1,263 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>demo</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+
+    <link href="https://fonts.googleapis.com/css2?family=DotGothic16&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'DotGothic16';
+        }
+
+        #fullOverlay {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(100, 100, 100, .8);
+            z-index: 2147483647;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- オーバーレイ　class="d-none" で非表示　外すと表示-->
+    <!-- <div class="d-flex align-items-center justify-content-center" id="fullOverlay"> -->
+    <div class="d-none d-flex align-items-center justify-content-center" id="fullOverlay">
+        <!-- 結果表示　-->
+        <div class="card text-center">
+            <div class="card-header">
+                結果
+            </div>
+            <div class="card-body">
+                <h5 id="resultTitle" class="card-title">あなたは○○です</h5>
+                <p id="resultContent" class="card-text">根気強く生きましょう。
+                </p>
+                <button type="button" class="btn btn-success" onclick="location.reload()">もう一度診断する</button>
+
+            </div>
+            <div class="card-footer text-muted">
+                診断テスト
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <h1 class="text-center m-5">おもしろ診断</h1>
+
+        <!-- プログレスバー -->
+        <div class="progress mb-3" role="progressbar" aria-label="Animated striped example" aria-valuenow="4"
+            aria-valuemin="0" aria-valuemax="5">
+            <div id="pro_bar" class="bg-info progress-bar progress-bar-striped progress-bar-animated" style="width: 0%">
+            </div>
+        </div>
+
+
+
+        <!-- circleメソッドで右にカルーセルを動かせる　javascript-->
+
+        <div id="carouselExampleControls" class="carousel slide" data-bs-touch="false" data-bs-interval="false">
+            <div class="carousel-inner">
+                <div id="carousel_id" class="carousel-item active">
+                    <!-- 質問項目　-->
+                    <div class="card text-center">
+                        <div class="card-header">
+                            Q1
+                        </div>
+                        <div class="card-body">
+                            <h5 class="title card-title">○○ですか？</h5>
+                            <p class="card-text">※正直に答えてください。
+                            </p>
+                            <button type="button" class="yes btn btn-success" id="yes">Yes</button>
+                            <button type="button" class="no btn btn-danger" id="no">No</button>
+                        </div>
+                        <div class="card-footer text-muted">
+                            診断テスト
+                        </div>
+                    </div>
+
+                </div>
+
+
+                <!--非表示になっています d-none -->
+                <button type="button" class="d-none carousel-control-prev" data-bs-target="#carouselExampleControls"
+                    data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">前へ</span>
+                </button>
+                <button id="next_button" type="button" class="d-none carousel-control-next"
+                    data-bs-target="#carouselExampleControls" data-bs-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">次へ</span>
+                </button>
+            </div>
+
+
+        </div>
+
+
+
+    </div>
+
+
+    <!-- bootstrap用 -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossorigin="anonymous">
+        </script>
+
+    <script>
+        //質問内容を入れる箱
+        const question_box = ['あなたは朝型人間ですか', '食事をよく摂る方ですか', 'よく寝る方ですか','朝ごはんを毎日食べますか？'];
+
+        //カウント箱 yes no o or 1 が質問の数だけ格納される。
+        const count_box = [];
+
+
+        //1個目の質問を書き換える
+        let q = document.querySelector('.title');
+        q.textContent = question_box[0];
+
+
+        //2個目以降の質問をfor文で出力
+        for (var i = 1; i < question_box.length; i++) {
+
+            //カルーセル複製
+            //カルーセル取得
+            var myCarousel = document.getElementById('carousel_id');
+            //複製
+            var clone_Carousel = myCarousel.cloneNode(true);
+
+            //複製した要素のid属性を編集
+            clone_Carousel.id = "carousel_id" + i;
+
+            //複製した要素のclass属性を編集
+            clone_Carousel.classList.remove("active");
+
+            // 複製した要素の子孫要素を編集 Q1
+            let question_element = clone_Carousel.querySelector('.card-header');
+            question_element.textContent = 'Q' + (i + 1);
+
+
+            // 複製した要素の子孫要素を編集
+            let h5_element = clone_Carousel.querySelector("h5");
+            h5_element.textContent = question_box[i];
+
+            // 複製したHTML要素をページに挿入
+            myCarousel.before(clone_Carousel);
+
+        }
+
+
+
+
+
+        // const yes = document.getElementById('yes'); // トリガーになる要素を取得
+        // const no = document.getElementById('no'); // トリガーになる要素を取得
+
+        const next_button = document.getElementById('next_button'); // トリガーになる要素を取得
+
+
+
+
+
+
+
+        //次のカルーセルに動くボタン配列にして全部にイベントリスナーつける
+        //yesバージョン
+        var yes = document.querySelectorAll(".yes");
+        yes.forEach(function (target) {
+
+            //yesボタンを押したときの動作
+            target.addEventListener('click', function () { // 第一引数にclickを指定
+
+                //yesが押下されたため、1を配列の最後に格納
+                count_box[count_box.length] = 1;
+
+                //プログレスバーを動かす関数
+                progressPersent();
+
+                if (question_box.length == count_box.length) {
+                    //複製した要素のclass属性を編集
+                    overLayOpen();
+                } else {
+                    // クリックイベントの処理を記述
+                    //next_move();
+                    next_button.click();
+
+                }
+
+            });
+        });
+
+
+        //次のカルーセルに動くボタン配列にして全部にイベントリスナーつける
+        //noバージョン
+        var no = document.querySelectorAll(".no");
+        no.forEach(function (target) {
+
+            //noボタンを押したときの動作
+            target.addEventListener('click', function () { // 第一引数にclickを指定
+
+
+                //noが押下されたため、0を配列の最後に格納
+                count_box[count_box.length] = 0;
+
+                //プログレスバーを動かす関数
+                progressPersent();
+
+                if (question_box.length == count_box.length) {
+                    //複製した要素のclass属性を編集
+                    overLayOpen();
+                } else {
+                    // クリックイベントの処理を記述
+                    //next_move();
+                    next_button.click();
+                }
+            });
+        });
+
+
+        //オーバーレイを表示関数
+        function overLayOpen() {
+
+            //count_box配列の合計値を取得
+            var sumCountBox = count_box.reduce((sum, num) => sum + num, 0);
+
+            //if count_box の中の1が？個以下ならのやつ
+            var textResultTitle;
+            if (sumCountBox <= 2) {
+                textResultTitle = "Yesって答えた数すくな";
+            } else if (sumCountBox <= 5) {
+                textResultTitle = "まあまあじゃん";
+            }
+
+            //結果タイトル書き換え
+            var resultTitle = document.getElementById('resultTitle');
+            resultTitle.textContent = textResultTitle;
+            //結果コンテンツ書き換え
+            var resultContent = document.getElementById('resultContent');
+            resultContent.textContent = "Yesと答えた数は" + sumCountBox + "回";
+
+            var overLay = document.getElementById('fullOverlay');
+            overLay.classList.remove("d-none");
+        }
+
+        //プログレスバーをいじる関数
+        function progressPersent() {
+            //パーセントを計算　回答数　/ 質問数 * 100=　を切り上げ
+            var persent = count_box.length / question_box.length * 100;
+            document.getElementById("pro_bar").setAttribute("style", "width: " + persent + "%");
+        }
+    </script>
+
+</body>
+
+
+</html>
